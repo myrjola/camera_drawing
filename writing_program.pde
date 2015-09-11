@@ -1,6 +1,9 @@
 
 ArrayList<PaintShape> particles = new ArrayList<PaintShape>();
 
+int lastCursorX, lastCursorY, deltaX, deltaY;
+
+boolean controlDown, shiftDown, altDown;
 
 void setup()
 {
@@ -14,20 +17,49 @@ void setup()
 
 void draw()
 {
+  deltaX = mouseX - lastCursorX;
+  deltaY = mouseY - lastCursorY;
+  lastCursorX = mouseX;
+  lastCursorY = mouseY;
   background(color(200));
   for (int i=0; i<particles.size(); i++)
   {
-    particles.get(i).draw() ;
+    particles.get(i).draw();
   }
 }
 
+void keyPressed() {
+  if (key == CODED) {
+    if (keyCode == CONTROL) {
+      controlDown = true;
+    } else if (keyCode == ALT) {
+      altDown = true;
+    } else if (keyCode == SHIFT) {
+      shiftDown = true;
+    }
+  }
+}
+
+void keyReleased() {
+  if (key == CODED) {
+    if (keyCode == CONTROL) {
+      controlDown = false;
+    } else if (keyCode == ALT) {
+      altDown = false;
+    } else if (keyCode == SHIFT) {
+      shiftDown = false;
+    }
+  }
+}
 
 class PaintShape
 {
   int x,y,kind;
-  float rotation;
+  float rotation = 0;
+  float ORIGINAL_SIZE = 32.0;
   // Size of the bounding box
-  int sizeX = 32, sizeY = 32;
+  float sizeX = ORIGINAL_SIZE;
+  float sizeY = ORIGINAL_SIZE;
   PShape pShape;
   PaintShape(int _x, int _y, int _kind)
   {
@@ -38,36 +70,45 @@ class PaintShape
     pShape.translate(x, y);
   }
 
-  int getCenterX()
+  void updateMatrix()
   {
-    return x + sizeX/2;
-  }
-
-  int getCenterY()
-  {
-    return y + sizeY/2;
+    pShape.translate(x+sizeX/2, y+sizeY/2);
+    pShape.rotate(rotation);
+    pShape.translate(-x-sizeX/2, -y-sizeY/2);
+    float scalePercentageX = sizeX/ORIGINAL_SIZE;
+    float scalePercentageY = sizeY/ORIGINAL_SIZE;
+    pShape.scale(sizeX/ORIGINAL_SIZE, sizeY/ORIGINAL_SIZE);
+    pShape.translate(x/scalePercentageX, y/scalePercentageY);
   }
 
   void draw()
   {
     pShape.setStroke(false);
-    if(isOver(mouseX, mouseY))
+    if (isHoover(mouseX, mouseY))
     {
+      pShape.resetMatrix();
       pShape.setStroke(true);
       pShape.setStroke(color(100, 100 ,200));
-      pShape.translate(sizeX/2, sizeY/2);
-      pShape.rotate(0.01);
-      pShape.translate(-sizeX/2, -sizeY/2);
-   }
+      if (controlDown) {
+        rotation += 0.01;
+      } else if (shiftDown) {
+        x += deltaX;
+        y += deltaY;
+      } else if (altDown) {
+        sizeX *= 1 + deltaX/sizeX;
+        sizeY *= 1 + deltaY/sizeY;
+      }
+      updateMatrix();
+    }
     shape(pShape);
   }
 
-  boolean isOver(int mx, int my)
+  boolean isHoover(int cursorX, int cursorY)
   {
-    if (mx > x
-        && mx < x+sizeX
-        && my > y
-        && my < y+sizeY)
+    if (cursorX > x
+        && cursorX < x+sizeX
+        && cursorY > y
+        && cursorY < y+sizeY)
     {
       return true;
     }
@@ -76,11 +117,4 @@ class PaintShape
       return false;
     }
   }
-  int where(int mmx, int mmy)
-  {
-
-    return mmx-x;
-
-  }
-
 }
