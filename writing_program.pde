@@ -8,11 +8,11 @@ boolean controlDown, shiftDown, altDown;
 void setup()
 {
   size(640, 360, P2D);
-  background(color(200));
   for (int i=0; i<10; i++)
   {
     particles.add(new PaintShape(i*40, height/2, RECT));
   }
+  particles.add(new PaintShape(10*40, height/2, ELLIPSE));
 }
 
 void draw()
@@ -21,7 +21,7 @@ void draw()
   deltaY = mouseY - lastCursorY;
   lastCursorX = mouseX;
   lastCursorY = mouseY;
-  background(color(200));
+  background(color(255));
   for (int i=0; i<particles.size(); i++)
   {
     particles.get(i).draw();
@@ -66,8 +66,10 @@ class PaintShape
     x = _x;
     y = _y;
     kind = _kind;
-    pShape = createShape(RECT, 0, 0, sizeX, sizeY);
+    pShape = createShape(kind, 0, 0, sizeX, sizeY);
     pShape.translate(x, y);
+
+    pShape.setFill(color(random(255), random(255), random(255)));
   }
 
   void updateMatrix()
