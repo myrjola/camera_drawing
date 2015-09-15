@@ -1,7 +1,7 @@
 
 ArrayList<PaintShape> particles = new ArrayList<PaintShape>();
 
-int lastCursorX, lastCursorY, deltaX, deltaY;
+float lastCursorX, lastCursorY, deltaX, deltaY;
 
 boolean controlDown, shiftDown, altDown;
 
@@ -19,10 +19,12 @@ void setup()
 
 void draw()
 {
-  deltaX = mouseX - lastCursorX;
-  deltaY = mouseY - lastCursorY;
-  lastCursorX = mouseX;
-  lastCursorY = mouseY;
+  float pointerX = mouseX;
+  float pointerY = mouseY;
+  deltaX = pointerX - lastCursorX;
+  deltaY = pointerY - lastCursorY;
+  lastCursorX = pointerX;
+  lastCursorY = pointerY;
   background(color(255));
 
   if (!controlDown && !shiftDown && !altDown) {
@@ -30,11 +32,11 @@ void draw()
   }
   for (int i=0; i < particles.size(); i++)
   {
-    particles.get(i).draw();
+    particles.get(i).draw(mouseX, mouseY);
   }
   // Draw a rotation arm
   if (controlDown && lockedShape != null) {
-    line(lockedShape.getCenterX(), lockedShape.getCenterY(), mouseX, mouseY);
+    line(lockedShape.getCenterX(), lockedShape.getCenterY(), pointerX, pointerY);
   }
 }
 
@@ -101,16 +103,16 @@ class PaintShape
     return y + sizeY / 2;
   }
 
-  void draw()
+  void draw(float pointerX, float pointerY)
   {
     pShape.setStroke(false);
-    if (isHoover(mouseX, mouseY))
+    if (isHoover(pointerX, pointerY))
     {
       pShape.resetMatrix();
       pShape.setStroke(true);
       pShape.setStroke(color(100, 100 ,200));
       if (controlDown) {
-        float angle = atan2(mouseY - getCenterY(), mouseX - getCenterX());
+        float angle = atan2(pointerY - getCenterY(), pointerX - getCenterX());
         rotation = angle;
 
       } else if (shiftDown) {
@@ -125,7 +127,7 @@ class PaintShape
     shape(pShape);
   }
 
-  boolean isHoover(int cursorX, int cursorY)
+  boolean isHoover(float cursorX, float cursorY)
   {
     if (lockedShape == this) {
       return true;
