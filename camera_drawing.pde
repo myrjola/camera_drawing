@@ -14,13 +14,20 @@ void setup()
 
 void draw()
 {
+  background(color(255));
+
+  // Draw help text
+  fill(50);
+  text("'e' - create ellipse\n'r' - create rectangle\nShift/Ctrl/Alt - translate/rotate/scale",
+       5, 12);
+
+
   float pointerX = mouseX;
   float pointerY = mouseY;
   deltaX = pointerX - lastCursorX;
   deltaY = pointerY - lastCursorY;
   lastCursorX = pointerX;
   lastCursorY = pointerY;
-  background(color(255));
 
   if (!controlDown && !shiftDown && !altDown) {
     lockedShape = null;
