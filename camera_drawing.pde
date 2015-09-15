@@ -21,7 +21,6 @@ void draw()
   text("'e' - create ellipse\n'r' - create rectangle\nShift/Ctrl/Alt - translate/rotate/scale",
        5, 12);
 
-
   float pointerX = mouseX;
   float pointerY = mouseY;
   deltaX = pointerX - lastCursorX;
@@ -79,6 +78,8 @@ class PaintShape
   float sizeX = ORIGINAL_SIZE;
   float sizeY = ORIGINAL_SIZE;
   PShape pShape;
+  AABB2D boundingBox;
+
   PaintShape(int _x, int _y, int _kind)
   {
     x = _x;
@@ -86,6 +87,7 @@ class PaintShape
     kind = _kind;
     pShape = createShape(kind, 0, 0, sizeX, sizeY);
     pShape.translate(x, y);
+    boundingBox = new AABB2D(x, y, sizeX, sizeY);
 
     pShape.setFill(color(random(255), random(255), random(255)));
   }
@@ -99,6 +101,9 @@ class PaintShape
     float scalePercentageY = sizeY/ORIGINAL_SIZE;
     pShape.scale(sizeX/ORIGINAL_SIZE, sizeY/ORIGINAL_SIZE);
     pShape.translate(x/scalePercentageX, y/scalePercentageY);
+    boundingBox.setRotation(rotation);
+    boundingBox.setSize(sizeX, sizeY);
+    boundingBox.setCenter(x+sizeX/2, y+sizeY/2);
   }
 
   float getCenterX() {
@@ -133,23 +138,20 @@ class PaintShape
     shape(pShape);
   }
 
+  // Collision detection based on the bounding box
   boolean isHoover(float cursorX, float cursorY)
   {
     if (lockedShape == this) {
       return true;
     } else if (lockedShape != null) {
       return false;
-    }
-    if (cursorX > x
-        && cursorX < x+sizeX
-        && cursorY > y
-        && cursorY < y+sizeY)
-    {
+    } if (cursorX > boundingBox.minX
+          && cursorX < boundingBox.maxX
+          && cursorY > boundingBox.minY
+          && cursorY < boundingBox.maxY) {
       lockedShape = this;
       return true;
-    }
-    else
-    {
+    } else {
       return false;
     }
   }
