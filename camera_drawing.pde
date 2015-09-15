@@ -10,7 +10,7 @@ PaintShape lockedShape = null;
 void setup()
 {
   size(640, 360, P2D);
-  for (int i=0; i<10; i++)
+  for (int i = 0; i < 10; i++)
   {
     particles.add(new PaintShape(i*40, height/2, RECT));
   }
@@ -28,9 +28,13 @@ void draw()
   if (!controlDown && !shiftDown && !altDown) {
     lockedShape = null;
   }
-  for (int i=0; i<particles.size(); i++)
+  for (int i=0; i < particles.size(); i++)
   {
     particles.get(i).draw();
+  }
+  // Draw a rotation arm
+  if (controlDown && lockedShape != null) {
+    line(lockedShape.getCenterX(), lockedShape.getCenterY(), mouseX, mouseY);
   }
 }
 
@@ -89,6 +93,14 @@ class PaintShape
     pShape.translate(x/scalePercentageX, y/scalePercentageY);
   }
 
+  float getCenterX() {
+    return x + sizeX / 2;
+  }
+
+  float getCenterY() {
+    return y + sizeY / 2;
+  }
+
   void draw()
   {
     pShape.setStroke(false);
@@ -98,7 +110,9 @@ class PaintShape
       pShape.setStroke(true);
       pShape.setStroke(color(100, 100 ,200));
       if (controlDown) {
-        rotation += 0.01;
+        float angle = atan2(mouseY - getCenterY(), mouseX - getCenterX());
+        rotation = angle;
+
       } else if (shiftDown) {
         x += deltaX;
         y += deltaY;
