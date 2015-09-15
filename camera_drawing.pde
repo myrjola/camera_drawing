@@ -1,5 +1,5 @@
 
-ArrayList<PaintShape> particles = new ArrayList<PaintShape>();
+ArrayList<PaintShape> paintShapes = new ArrayList<PaintShape>();
 
 float lastCursorX, lastCursorY, deltaX, deltaY;
 
@@ -31,10 +31,22 @@ void draw()
   if (!controlDown && !shiftDown && !altDown) {
     lockedShape = null;
   }
-  for (int i=0; i < particles.size(); i++)
+  int lockedShapeIndex = -1;
+  for (int i = 0; i < paintShapes.size(); i++)
   {
-    particles.get(i).draw(mouseX, mouseY);
+    boolean hooveredOn = paintShapes.get(i).draw(mouseX, mouseY);
+    if (hooveredOn) {
+      lockedShapeIndex = i;
+    }
   }
+
+  if (lockedShapeIndex > 0 && shiftDown) {
+    // Move the locked shape to the front if a translation is in progress
+    PaintShape movedObject = paintShapes.remove(lockedShapeIndex);
+    // Painted in the front means last in the list
+    paintShapes.add(movedObject);
+  }
+
   // Draw a rotation arm
   if (controlDown && lockedShape != null) {
     line(lockedShape.getCenterX(), lockedShape.getCenterY(), pointerX, pointerY);
@@ -51,9 +63,9 @@ void keyPressed() {
       shiftDown = true;
     }
   } else if (key == 'e') {
-    particles.add(new PaintShape(mouseX, mouseY, ELLIPSE));
+    paintShapes.add(new PaintShape(mouseX, mouseY, ELLIPSE));
   } else if (key == 'r') {
-    particles.add(new PaintShape(mouseX, mouseY, RECT));
+    paintShapes.add(new PaintShape(mouseX, mouseY, RECT));
   }
 }
 
@@ -114,11 +126,14 @@ class PaintShape
     return y + sizeY / 2;
   }
 
-  void draw(float pointerX, float pointerY)
+  // Returns true if there's a hoover over the shape.
+  boolean draw(float pointerX, float pointerY)
   {
     pShape.setStroke(false);
+    boolean hooveredOn = false;
     if (isHoover(pointerX, pointerY))
     {
+      hooveredOn = true;
       pShape.resetMatrix();
       pShape.setStroke(true);
       pShape.setStroke(color(100, 100 ,200));
@@ -136,6 +151,8 @@ class PaintShape
       updateMatrix();
     }
     shape(pShape);
+
+    return hooveredOn;
   }
 
   // Collision detection based on the bounding box
