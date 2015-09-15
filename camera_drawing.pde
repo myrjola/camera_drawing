@@ -10,11 +10,6 @@ PaintShape lockedShape = null;
 void setup()
 {
   size(640, 360, P2D);
-  for (int i = 0; i < 10; i++)
-  {
-    particles.add(new PaintShape(i*40, height/2, RECT));
-  }
-  particles.add(new PaintShape(10*40, height/2, ELLIPSE));
 }
 
 void draw()
@@ -49,6 +44,10 @@ void keyPressed() {
     } else if (keyCode == SHIFT) {
       shiftDown = true;
     }
+  } else if (key == 'e') {
+    particles.add(new PaintShape(mouseX, mouseY, ELLIPSE));
+  } else if (key == 'r') {
+    particles.add(new PaintShape(mouseX, mouseY, RECT));
   }
 }
 
