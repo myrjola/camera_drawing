@@ -5,6 +5,8 @@ int lastCursorX, lastCursorY, deltaX, deltaY;
 
 boolean controlDown, shiftDown, altDown;
 
+PaintShape lockedShape = null;
+
 void setup()
 {
   size(640, 360, P2D);
@@ -22,6 +24,10 @@ void draw()
   lastCursorX = mouseX;
   lastCursorY = mouseY;
   background(color(255));
+
+  if (!controlDown && !shiftDown && !altDown) {
+    lockedShape = null;
+  }
   for (int i=0; i<particles.size(); i++)
   {
     particles.get(i).draw();
@@ -107,11 +113,17 @@ class PaintShape
 
   boolean isHoover(int cursorX, int cursorY)
   {
+    if (lockedShape == this) {
+      return true;
+    } else if (lockedShape != null) {
+      return false;
+    }
     if (cursorX > x
         && cursorX < x+sizeX
         && cursorY > y
         && cursorY < y+sizeY)
     {
+      lockedShape = this;
       return true;
     }
     else
