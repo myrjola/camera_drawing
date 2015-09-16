@@ -5,13 +5,14 @@ float lastCursorX, lastCursorY, deltaX, deltaY;
 
 boolean controlDown, shiftDown, altDown;
 
-MousePointer pointer = new MousePointer();
+CameraPointer pointer;
 
 PaintShape lockedShape = null;
 
 void setup()
 {
   size(640, 360, P2D);
+  pointer = new CameraPointer(this);
 }
 
 void draw()
