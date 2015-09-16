@@ -5,6 +5,8 @@ float lastCursorX, lastCursorY, deltaX, deltaY;
 
 boolean controlDown, shiftDown, altDown;
 
+MousePointer pointer = new MousePointer();
+
 PaintShape lockedShape = null;
 
 void setup()
@@ -21,8 +23,9 @@ void draw()
   text("'e' - create ellipse\n'r' - create rectangle\nShift/Ctrl/Alt - translate/rotate/scale",
        5, 12);
 
-  float pointerX = mouseX;
-  float pointerY = mouseY;
+  pointer.update();
+  float pointerX = pointer.x;
+  float pointerY = pointer.y;
   deltaX = pointerX - lastCursorX;
   deltaY = pointerY - lastCursorY;
   lastCursorX = pointerX;
@@ -30,11 +33,12 @@ void draw()
 
   if (!keyPressed) {
     lockedShape = null;
+    pointer.drawPointing();
   }
   int lockedShapeIndex = paintShapes.size();
   for (int i = 0; i < paintShapes.size(); i++)
   {
-    boolean hooveredOn = paintShapes.get(i).draw(mouseX, mouseY);
+    boolean hooveredOn = paintShapes.get(i).draw(pointerX, pointerY);
     if (hooveredOn) {
       lockedShapeIndex = i;
     }
@@ -63,10 +67,11 @@ void keyPressed() {
       shiftDown = true;
     }
   } else if (key == 'e') {
-    paintShapes.add(new PaintShape(mouseX, mouseY, ELLIPSE));
+    paintShapes.add(new PaintShape(pointer.x, pointer.y, ELLIPSE));
   } else if (key == 'r') {
-    paintShapes.add(new PaintShape(mouseX, mouseY, RECT));
+    paintShapes.add(new PaintShape(pointer.x, pointer.y, RECT));
   }
+  pointer.drawDragging();
 }
 
 void keyReleased() {
