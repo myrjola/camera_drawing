@@ -98,21 +98,19 @@ class PaintShape
     y = _y;
     kind = _kind;
     pShape = createShape(kind, 0, 0, sizeX, sizeY);
-    pShape.translate(x, y);
     boundingBox = new AABB2D(x, y, sizeX, sizeY);
-
     pShape.setFill(color(random(255), random(255), random(255)));
   }
 
   void updateMatrix()
   {
-    pShape.translate(x+sizeX/2, y+sizeY/2);
-    pShape.rotate(rotation);
-    pShape.translate(-x-sizeX/2, -y-sizeY/2);
+    translate(x, y);
+    translate(sizeX / 2, sizeY / 2);
+    rotate(rotation);
+    translate(- sizeX / 2, - sizeY / 2);
     float scalePercentageX = sizeX/ORIGINAL_SIZE;
     float scalePercentageY = sizeY/ORIGINAL_SIZE;
-    pShape.scale(sizeX/ORIGINAL_SIZE, sizeY/ORIGINAL_SIZE);
-    pShape.translate(x/scalePercentageX, y/scalePercentageY);
+    scale(sizeX/ORIGINAL_SIZE, sizeY/ORIGINAL_SIZE);
     boundingBox.setRotation(rotation);
     boundingBox.setSize(sizeX, sizeY);
     boundingBox.setCenter(x+sizeX/2, y+sizeY/2);
@@ -129,14 +127,12 @@ class PaintShape
   // Returns true if there's a hoover over the shape.
   boolean draw(float pointerX, float pointerY)
   {
-    pShape.setStroke(false);
+    noStroke();
     boolean hooveredOn = false;
     if (isHoover(pointerX, pointerY))
     {
       hooveredOn = true;
-      pShape.resetMatrix();
-      pShape.setStroke(true);
-      pShape.setStroke(color(100, 100 ,200));
+      stroke(color(100, 100, 200));
       if (controlDown) {
         float angle = atan2(pointerY - getCenterY(), pointerX - getCenterX());
         // Normalize the rotation to [0, 2*PI]
@@ -153,7 +149,9 @@ class PaintShape
 
         // Also originally positive deltas should be positive rotatedDeltas.
         // This needs some axis inverting.
-        if (rotation >= 5 * QUARTER_PI && rotation <= 7 * QUARTER_PI) {
+        if (rotation >= 7 * QUARTER_PI) {
+          
+        } else if (rotation >= 5 * QUARTER_PI) {
           rotatedDelta.y = -rotatedDelta.y;
         } else if (rotation >= 3 * QUARTER_PI) {
             rotatedDelta.x = -rotatedDelta.x;
@@ -165,9 +163,11 @@ class PaintShape
         sizeX *= 1 + rotatedDelta.x/sizeX;
         sizeY *= 1 + rotatedDelta.y/sizeY;
       }
-      updateMatrix();
     }
+    pushMatrix();
+    updateMatrix();
     shape(pShape);
+    popMatrix();
 
     return hooveredOn;
   }
