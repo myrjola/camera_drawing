@@ -139,14 +139,31 @@ class PaintShape
       pShape.setStroke(color(100, 100 ,200));
       if (controlDown) {
         float angle = atan2(pointerY - getCenterY(), pointerX - getCenterX());
-        rotation = angle;
+        // Normalize the rotation to [0, 2*PI]
+        rotation = (angle + 2 * PI) % (2*PI);
 
       } else if (shiftDown) {
         x += deltaX;
         y += deltaY;
       } else if (altDown) {
-        sizeX *= 1 + deltaX/sizeX;
-        sizeY *= 1 + deltaY/sizeY;
+
+        // We have to account for rotation to make a more natural scaling.
+        PVector rotatedDelta = new PVector(deltaX, deltaY);
+        rotatedDelta.rotate(rotation);
+
+        // Also originally positive deltas should be positive rotatedDeltas.
+        // This needs some axis inverting.
+        if (rotation >= 5 * QUARTER_PI && rotation <= 7 * QUARTER_PI) {
+          rotatedDelta.y = -rotatedDelta.y;
+        } else if (rotation >= 3 * QUARTER_PI) {
+            rotatedDelta.x = -rotatedDelta.x;
+            rotatedDelta.y = -rotatedDelta.y;
+        } else if (rotation >= QUARTER_PI) {
+          rotatedDelta.x = -rotatedDelta.x;
+        }
+
+        sizeX *= 1 + rotatedDelta.x/sizeX;
+        sizeY *= 1 + rotatedDelta.y/sizeY;
       }
       updateMatrix();
     }
