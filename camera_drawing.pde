@@ -127,12 +127,13 @@ class PaintShape
   // Returns true if there's a hoover over the shape.
   boolean draw(float pointerX, float pointerY)
   {
-    noStroke();
+    pShape.setStroke(false);
     boolean hooveredOn = false;
     if (isHoover(pointerX, pointerY))
     {
       hooveredOn = true;
-      stroke(color(100, 100, 200));
+      pShape.setStroke(true);
+      pShape.setStroke(color(100, 100, 200));
       if (controlDown) {
         float angle = atan2(pointerY - getCenterY(), pointerX - getCenterX());
         // Normalize the rotation to [0, 2*PI]
