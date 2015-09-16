@@ -31,7 +31,7 @@ void draw()
   if (!keyPressed) {
     lockedShape = null;
   }
-  int lockedShapeIndex = -1;
+  int lockedShapeIndex = paintShapes.size();
   for (int i = 0; i < paintShapes.size(); i++)
   {
     boolean hooveredOn = paintShapes.get(i).draw(mouseX, mouseY);
@@ -40,7 +40,7 @@ void draw()
     }
   }
 
-  if (lockedShapeIndex > 0 && shiftDown) {
+  if (lockedShapeIndex < paintShapes.size() && shiftDown) {
     // Move the locked shape to the front if a translation is in progress
     PaintShape movedObject = paintShapes.remove(lockedShapeIndex);
     // Painted in the front means last in the list
