@@ -21,7 +21,8 @@ void draw()
 
   // Draw help text
   fill(50);
-  text("'e' - create ellipse\n'r' - create rectangle\nShift/Ctrl/Alt - translate/rotate/scale",
+  text("'e' - create ellipse\n'r' - create rectangle\n" +
+       "Shift/Ctrl/Alt - translate/rotate/scale",
        5, 12);
 
   pointer.update();
