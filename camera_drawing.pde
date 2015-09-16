@@ -28,7 +28,7 @@ void draw()
   lastCursorX = pointerX;
   lastCursorY = pointerY;
 
-  if (!controlDown && !shiftDown && !altDown) {
+  if (!keyPressed) {
     lockedShape = null;
   }
   int lockedShapeIndex = -1;
@@ -150,7 +150,7 @@ class PaintShape
         // Also originally positive deltas should be positive rotatedDeltas.
         // This needs some axis inverting.
         if (rotation >= 7 * QUARTER_PI) {
-          
+          // Nothing needs to be done, but this is cleaner like this.
         } else if (rotation >= 5 * QUARTER_PI) {
           rotatedDelta.y = -rotatedDelta.y;
         } else if (rotation >= 3 * QUARTER_PI) {
