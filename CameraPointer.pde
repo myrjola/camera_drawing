@@ -18,27 +18,29 @@ class CameraPointer {
     frame = createImage(video.width, video.height, ARGB);
   }
 
-  void updateCamera()
+  void updateCamera(boolean captureToScreen)
   {
     if (video.available()) {
       video.read();
       video.loadPixels();
+      if (captureToScreen) {
+        pushMatrix();
+        scale(-1.0, 1.0);
+        translate(-width, 0);
+        image(video, 0, 0);
+        popMatrix();
+      }
     }
   }
 
-  void update() {
-    updateCamera();
+  void update(boolean debugMode) {
+    updateCamera(debugMode);
 
     frame.copy(video,
                0, 0, video.width, video.height,
                0, 0, video.width, video.height);
     frame.loadPixels();
-    frame.filter(BLUR, 3);
-    pushMatrix();
-    scale(-1.0, 1.0);
-    translate(-width, 0);
-    image(frame, 0, 0);
-    popMatrix();
+    frame.filter(BLUR, 6);
 
     float targetHue = hue(trackedColor);
     float smallestHueDifference = 1;

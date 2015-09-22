@@ -8,6 +8,8 @@ boolean choosingFillColorInProgress;
 
 boolean choosingTrackedColorInProgress;
 
+boolean debugMode;
+
 color fillColor = color(155);
 
 CameraPointer pointer;
@@ -29,7 +31,7 @@ void draw()
     color chosenColor = color(255);
 
     if (pointer.video != null) {
-      pointer.updateCamera();
+      pointer.updateCamera(true);
 
       pushMatrix();
       scale(-1.0, 1.0);
@@ -75,11 +77,11 @@ void paintProgramDraw()
   fill(50);
   text("'e' - create ellipse\n'r' - create rectangle\n" +
        "'x' - remove object\n't' - choose tracked color\n" +
-       "'c' - choose fill color" +
+       "'c' - choose fill color\n'd' - debug mode\n" +
        "Shift/Ctrl/Alt - translate/rotate/scale",
        5, 12);
 
-  pointer.update();
+  pointer.update(debugMode);
   float pointerX = pointer.x;
   float pointerY = pointer.y;
   deltaX = pointerX - lastCursorX;
@@ -134,6 +136,8 @@ void keyPressed() {
     choosingFillColorInProgress = true;
   } else if (key == 't') {
     choosingTrackedColorInProgress = true;
+  } else if (key == 'd') {
+    debugMode = true;
   }
   pointer.drawDragging();
 }
@@ -151,6 +155,8 @@ void keyReleased() {
     choosingFillColorInProgress = false;
   } else if (key == 't') {
     choosingTrackedColorInProgress = false;
+  } else if (key == 'd') {
+    debugMode = false;
   }
 }
 
