@@ -41,7 +41,7 @@ class CameraPointer {
   void update(boolean debugMode) {
     updateCamera(debugMode);
     float targetHue = hue(trackedColor);
-    float smallestHueDifference = 255;
+    float smallestHueDifference = MAX_FLOAT;
     int index = 0;
 
     // First pass: copy over hue values to hueMatrix.
@@ -53,7 +53,7 @@ class CameraPointer {
     }
 
     // Second pass: find the pixel where the difference is minimized taking into
-    // account neighboring pixels.
+    // account other pixels close by.
     int samplingRadius = 32;
 
     for (int pixelY = 32; pixelY < (video.height - samplingRadius); pixelY++) {
@@ -61,10 +61,25 @@ class CameraPointer {
 
         float pixelHue = hueMatrix[pixelY][pixelX];
 
-        float hueDifference = abs(targetHue - pixelHue);
+        float neighbor1Hue = hueMatrix[pixelY - samplingRadius][pixelX];
+        float neighbor2Hue = hueMatrix[pixelY + samplingRadius][pixelX];
+        float neighbor3Hue = hueMatrix[pixelY][pixelX - samplingRadius];
+        float neighbor4Hue = hueMatrix[pixelY][pixelX + samplingRadius];
 
-        if (hueDifference < smallestHueDifference) {
-          smallestHueDifference = hueDifference;
+        // We are trying to minimize the squares of the difference
+        float hueDifference = sq(abs(targetHue - pixelHue));
+        float hueDifference1 = sq(abs(targetHue - neighbor1Hue));
+        float hueDifference2 = sq(abs(targetHue - neighbor1Hue));
+        float hueDifference3 = sq(abs(targetHue - neighbor1Hue));
+        float hueDifference4 = sq(abs(targetHue - neighbor1Hue));
+
+        float totalDifference = hueDifference + (hueDifference1 +
+                                                 hueDifference2 +
+                                                 hueDifference3 +
+                                                 hueDifference4) / 2;
+
+        if (totalDifference < smallestHueDifference) {
+          smallestHueDifference = totalDifference;
           y = pixelY;
           // We want to mirror the x-axis for more natural motions.
           x = width - pixelX;
