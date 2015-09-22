@@ -5,7 +5,7 @@ import processing.video.*;
  */
 class CameraPointer {
 
-  int x = 0, y = 0;
+  int x, y;
 
   Capture video;
   float[][] hueMatrix;
@@ -56,8 +56,8 @@ class CameraPointer {
     // account other pixels close by.
     int samplingRadius = 32;
 
-    for (int pixelY = 32; pixelY < (video.height - samplingRadius); pixelY++) {
-      for (int pixelX = 32; pixelX < (video.width - samplingRadius); pixelX++) {
+    for (int pixelY = samplingRadius; pixelY < (video.height - samplingRadius); pixelY++) {
+      for (int pixelX = samplingRadius; pixelX < (video.width - samplingRadius); pixelX++) {
 
         float pixelHue = hueMatrix[pixelY][pixelX];
 
@@ -65,18 +65,25 @@ class CameraPointer {
         float neighbor2Hue = hueMatrix[pixelY + samplingRadius][pixelX];
         float neighbor3Hue = hueMatrix[pixelY][pixelX - samplingRadius];
         float neighbor4Hue = hueMatrix[pixelY][pixelX + samplingRadius];
+        float neighbor5Hue = hueMatrix[pixelY - samplingRadius/2][pixelX];
+        float neighbor6Hue = hueMatrix[pixelY + samplingRadius/2][pixelX];
+        float neighbor7Hue = hueMatrix[pixelY][pixelX - samplingRadius/2];
+        float neighbor8Hue = hueMatrix[pixelY][pixelX + samplingRadius/2];
 
         // We are trying to minimize the squares of the difference
-        float hueDifference = sq(abs(targetHue - pixelHue));
+        float hueDifference  = sq(abs(targetHue - pixelHue));
         float hueDifference1 = sq(abs(targetHue - neighbor1Hue));
-        float hueDifference2 = sq(abs(targetHue - neighbor1Hue));
-        float hueDifference3 = sq(abs(targetHue - neighbor1Hue));
-        float hueDifference4 = sq(abs(targetHue - neighbor1Hue));
+        float hueDifference2 = sq(abs(targetHue - neighbor2Hue));
+        float hueDifference3 = sq(abs(targetHue - neighbor3Hue));
+        float hueDifference4 = sq(abs(targetHue - neighbor4Hue));
+        float hueDifference5 = sq(abs(targetHue - neighbor5Hue));
+        float hueDifference6 = sq(abs(targetHue - neighbor6Hue));
+        float hueDifference7 = sq(abs(targetHue - neighbor7Hue));
+        float hueDifference8 = sq(abs(targetHue - neighbor8Hue));
 
-        float totalDifference = hueDifference + (hueDifference1 +
-                                                 hueDifference2 +
-                                                 hueDifference3 +
-                                                 hueDifference4) / 2;
+        float totalDifference = hueDifference +
+          (hueDifference1 + hueDifference2 + hueDifference3 + hueDifference4) / 5 +
+          (hueDifference5 + hueDifference6 + hueDifference7 + hueDifference8) / 2;
 
         if (totalDifference < smallestHueDifference) {
           smallestHueDifference = totalDifference;
