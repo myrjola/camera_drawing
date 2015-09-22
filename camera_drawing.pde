@@ -15,7 +15,7 @@ int lockedShapeIndex;
 
 void setup()
 {
-  size(1280, 720, P2D);
+  size(640, 360, P2D);
   pointer = new CameraPointer(this);
 }
 
@@ -26,8 +26,17 @@ void draw()
 
     if (pointer.video != null) {
       pointer.updateCamera();
+
+      pushMatrix();
+      scale(-1.0, 1.0);
+      translate(-width, 0);
       image(pointer.video, 0, 0);
-      pointer.chosenColor = color(pointer.video.pixels[width*height/2 + width / 2]);
+      popMatrix();
+
+      // Choose the color from the middle of the picture
+      pointer.chosenColor = color(pointer.video.pixels[pointer.video.width *
+                                                       pointer.video.height / 2 +
+                                                       pointer.video.width / 2]);
     }
     fill(255);
     rect(0, 0, 128, 130);
@@ -56,7 +65,7 @@ void paintProgramDraw()
   // Draw help text
   fill(50);
   text("'e' - create ellipse\n'r' - create rectangle\n" +
-       "'x' - remove object\n" +
+       "'x' - remove object\n'c' - choose tracked color" +
        "Shift/Ctrl/Alt - translate/rotate/scale",
        5, 12);
 
@@ -111,9 +120,7 @@ void keyPressed() {
     if (lockedShape != null) {
       paintShapes.remove(lockedShapeIndex);
     }
-  } else if (key == 'c' && choosingColorInProgress) {
-    choosingColorInProgress = false;
-  } else if (key == 'c' && !choosingColorInProgress) {
+  } else if (key == 'c') {
     choosingColorInProgress = true;
   }
   pointer.drawDragging();
@@ -128,6 +135,8 @@ void keyReleased() {
     } else if (keyCode == SHIFT) {
       shiftDown = false;
     }
+  } else if (key == 'c') {
+    choosingColorInProgress = false;
   }
 }
 
