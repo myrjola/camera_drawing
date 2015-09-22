@@ -98,8 +98,8 @@ class CameraPointer {
     float deltax = x - lastX;
     float deltay = y - lastY;
 
-    x = lastX + deltax / 50.0;
-    y = lastY + deltay / 50.0;
+    x = lastX + deltax / 25.0;
+    y = lastY + deltay / 25.0;
 
     lastX = x;
     lastY = y;

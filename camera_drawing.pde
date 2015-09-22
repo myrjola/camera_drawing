@@ -8,7 +8,7 @@ boolean choosingFillColorInProgress;
 
 boolean choosingTrackedColorInProgress;
 
-boolean debugMode = true;
+boolean debugMode = false;
 
 color fillColor = color(155);
 
@@ -20,7 +20,7 @@ int lockedShapeIndex;
 
 void setup()
 {
-  size(640, 360, P2D);
+  size(1280, 720, P2D);
   pointer = new CameraPointer(this);
 }
 
@@ -161,7 +161,9 @@ void keyPressed() {
     choosingFillColorInProgress = true;
   } else if (key == 't') {
     choosingTrackedColorInProgress = true;
-  } else if (key == 'd') {
+  } else if (key == 'd' && debugMode) {
+    debugMode = false;
+  } else if (key == 'd' && !debugMode) {
     debugMode = true;
   }
 }
@@ -179,8 +181,6 @@ void keyReleased() {
     choosingFillColorInProgress = false;
   } else if (key == 't') {
     choosingTrackedColorInProgress = false;
-  } else if (key == 'd') {
-    debugMode = false;
   }
 }
 
