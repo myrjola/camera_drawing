@@ -4,8 +4,11 @@ float lastCursorX, lastCursorY, deltaX, deltaY;
 
 boolean controlDown, shiftDown, altDown;
 
-// In choosing color mode
-boolean choosingColorInProgress;
+boolean choosingFillColorInProgress;
+
+boolean choosingTrackedColorInProgress;
+
+color fillColor = color(155);
 
 CameraPointer pointer;
 
@@ -21,8 +24,9 @@ void setup()
 
 void draw()
 {
-  if (choosingColorInProgress) {
+  if (choosingFillColorInProgress || choosingTrackedColorInProgress) {
     background(color(255));
+    color chosenColor = color(255);
 
     if (pointer.video != null) {
       pointer.updateCamera();
@@ -34,9 +38,14 @@ void draw()
       popMatrix();
 
       // Choose the color from the middle of the picture
-      pointer.chosenColor = color(pointer.video.pixels[pointer.video.width *
-                                                       pointer.video.height / 2 +
-                                                       pointer.video.width / 2]);
+      chosenColor = color(pointer.video.pixels[pointer.video.width *
+                                               pointer.video.height / 2 +
+                                               pointer.video.width / 2]);
+      if (choosingFillColorInProgress) {
+        fillColor = chosenColor;
+      } else if (choosingTrackedColorInProgress) {
+        pointer.trackedColor = chosenColor;
+      }
     }
     fill(255);
     rect(0, 0, 128, 130);
@@ -50,7 +59,7 @@ void draw()
 
     fill(50);
     text("Chosen color:", 5, 12);
-    fill(pointer.chosenColor);
+    fill(chosenColor);
     rect(0, 14, 128, 130);
 
   } else {
@@ -65,7 +74,8 @@ void paintProgramDraw()
   // Draw help text
   fill(50);
   text("'e' - create ellipse\n'r' - create rectangle\n" +
-       "'x' - remove object\n'c' - choose tracked color" +
+       "'x' - remove object\n't' - choose tracked color\n" +
+       "'c' - choose fill color" +
        "Shift/Ctrl/Alt - translate/rotate/scale",
        5, 12);
 
@@ -121,7 +131,9 @@ void keyPressed() {
       paintShapes.remove(lockedShapeIndex);
     }
   } else if (key == 'c') {
-    choosingColorInProgress = true;
+    choosingFillColorInProgress = true;
+  } else if (key == 't') {
+    choosingTrackedColorInProgress = true;
   }
   pointer.drawDragging();
 }
@@ -136,7 +148,9 @@ void keyReleased() {
       shiftDown = false;
     }
   } else if (key == 'c') {
-    choosingColorInProgress = false;
+    choosingFillColorInProgress = false;
+  } else if (key == 't') {
+    choosingTrackedColorInProgress = false;
   }
 }
 
@@ -158,7 +172,7 @@ class PaintShape
     kind = _kind;
     pShape = createShape(kind, 0, 0, sizeX, sizeY);
     boundingBox = new AABB2D(x, y, sizeX, sizeY);
-    pShape.setFill(color(random(255), random(255), random(255)));
+    pShape.setFill(fillColor);
   }
 
   void updateMatrix()

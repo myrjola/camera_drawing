@@ -10,7 +10,7 @@ class CameraPointer {
   Capture video;
   PImage frame;
 
-  color chosenColor = color(255);
+  color trackedColor = color(255);
 
   CameraPointer(PApplet parent) {
     video = new Capture(parent, width, height);
@@ -40,7 +40,7 @@ class CameraPointer {
     image(frame, 0, 0);
     popMatrix();
 
-    float targetHue = hue(chosenColor);
+    float targetHue = hue(trackedColor);
     float smallestHueDifference = 1;
     int index = 0;
     for (int pixelY = 0; pixelY < video.height; pixelY++) {
@@ -60,7 +60,7 @@ class CameraPointer {
       }
     }
     // Draw a circle at the cursor;
-    fill(chosenColor);
+    fill(trackedColor);
     pushMatrix();
     translate(x, y);
     ellipse(0, 0, 10, 10);
