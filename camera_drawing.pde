@@ -125,9 +125,9 @@ void keyPressed() {
       shiftDown = true;
     }
   } else if (key == 'e') {
-    paintShapes.add(new PaintShape(pointer.x, pointer.y, ELLIPSE));
+    paintShapes.add(new PaintShape(int(pointer.x), int(pointer.y), ELLIPSE));
   } else if (key == 'r') {
-    paintShapes.add(new PaintShape(pointer.x, pointer.y, RECT));
+    paintShapes.add(new PaintShape(int(pointer.x), int(pointer.y), RECT));
   } else if (key == 'x') {
     if (lockedShape != null) {
       paintShapes.remove(lockedShapeIndex);

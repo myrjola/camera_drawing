@@ -5,7 +5,8 @@ import processing.video.*;
  */
 class CameraPointer {
 
-  int x, y;
+  float lastX = 0, lastY = 0;
+  float x = 0, y = 0;
 
   Capture video;
   float[][] hueMatrix;
@@ -94,6 +95,16 @@ class CameraPointer {
         index++;
       }
     }
+    // After this we want to smoothen out the movement.
+    float deltaX = x - lastX;
+    float deltaY = y - lastY;
+
+    x = lastX + deltaX / 50.0;
+    y = lastY + deltaY / 50.0;
+
+    lastX = x;
+    lastY = y;
+
     // Draw a circle at the cursor;
     fill(trackedColor);
     pushMatrix();
