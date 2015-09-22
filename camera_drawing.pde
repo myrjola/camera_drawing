@@ -8,7 +8,7 @@ boolean choosingFillColorInProgress;
 
 boolean choosingTrackedColorInProgress;
 
-boolean debugMode;
+boolean debugMode = true;
 
 color fillColor = color(155);
 
@@ -89,9 +89,27 @@ void paintProgramDraw()
   lastCursorX = pointerX;
   lastCursorY = pointerY;
 
+  if (debugMode && shiftDown) {
+    if (pointerX != pointer.x) {
+      println("pointerX: " + pointerX);
+      println("pointer.x" + pointer.x);
+    }
+    if (pointerY != pointer.y) {
+      println("pointerY: " + pointerY);
+      println("pointer.y" + pointer.y);
+    }
+    if (lastCursorX != pointer.lastX) {
+      println("lastCursorX: " + lastCursorX);
+      println("pointer.lastX" + pointer.lastX);
+    }
+    if (lastCursorY != pointer.lastY) {
+      println("lastCursorY: " + lastCursorY);
+      println("pointer.lastY" + pointer.lastY);
+    }
+  }
+
   if (!keyPressed) {
     lockedShape = null;
-    pointer.drawPointing();
   }
   lockedShapeIndex = paintShapes.size();
   for (int i = 0; i < paintShapes.size(); i++)
@@ -113,6 +131,13 @@ void paintProgramDraw()
   if (controlDown && lockedShape != null) {
     line(lockedShape.getCenterX(), lockedShape.getCenterY(), pointerX, pointerY);
   }
+
+  // Draw a circle at the cursor;
+  fill(pointer.trackedColor);
+  pushMatrix();
+  translate(pointer.x, pointer.y);
+  ellipse(0, 0, 10, 10);
+  popMatrix();
 }
 
 void keyPressed() {
@@ -139,7 +164,6 @@ void keyPressed() {
   } else if (key == 'd') {
     debugMode = true;
   }
-  pointer.drawDragging();
 }
 
 void keyReleased() {
@@ -162,8 +186,8 @@ void keyReleased() {
 
 class PaintShape
 {
-  int x,y,kind;
-  float rotation = 0;
+  int kind;
+  float x, y, rotation;
   float ORIGINAL_SIZE = 32.0;
   // Size of the bounding box
   float sizeX = ORIGINAL_SIZE;
