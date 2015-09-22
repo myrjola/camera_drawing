@@ -1,27 +1,62 @@
-
 ArrayList<PaintShape> paintShapes = new ArrayList<PaintShape>();
 
 float lastCursorX, lastCursorY, deltaX, deltaY;
 
 boolean controlDown, shiftDown, altDown;
 
+// In choosing color mode
+boolean choosingColorInProgress;
+
 CameraPointer pointer;
 
 PaintShape lockedShape = null;
 
+int lockedShapeIndex;
+
 void setup()
 {
-  size(640, 360, P2D);
+  size(1280, 720, P2D);
   pointer = new CameraPointer(this);
 }
 
 void draw()
+{
+  if (choosingColorInProgress) {
+    background(color(255));
+
+    if (pointer.video != null) {
+      pointer.updateCamera();
+      image(pointer.video, 0, 0);
+      pointer.chosenColor = color(pointer.video.pixels[width*height/2 + width / 2]);
+    }
+    fill(255);
+    rect(0, 0, 128, 130);
+
+    // Draw cross
+    int crossRadius = 32;
+    line(width/2 - crossRadius, height/2 - crossRadius,
+         width/2 + crossRadius, height/2 + crossRadius);
+    line(width/2 - crossRadius, height/2 + crossRadius,
+         width/2 + crossRadius, height/2 - crossRadius);
+
+    fill(50);
+    text("Chosen color:", 5, 12);
+    fill(pointer.chosenColor);
+    rect(0, 14, 128, 130);
+
+  } else {
+    paintProgramDraw();
+  }
+}
+
+void paintProgramDraw()
 {
   background(color(255));
 
   // Draw help text
   fill(50);
   text("'e' - create ellipse\n'r' - create rectangle\n" +
+       "'x' - remove object\n" +
        "Shift/Ctrl/Alt - translate/rotate/scale",
        5, 12);
 
@@ -76,6 +111,10 @@ void keyPressed() {
     if (lockedShape != null) {
       paintShapes.remove(lockedShapeIndex);
     }
+  } else if (key == 'c' && choosingColorInProgress) {
+    choosingColorInProgress = false;
+  } else if (key == 'c' && !choosingColorInProgress) {
+    choosingColorInProgress = true;
   }
   pointer.drawDragging();
 }
