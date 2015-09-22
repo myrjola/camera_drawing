@@ -37,7 +37,7 @@ void draw()
     lockedShape = null;
     pointer.drawPointing();
   }
-  int lockedShapeIndex = paintShapes.size();
+  lockedShapeIndex = paintShapes.size();
   for (int i = 0; i < paintShapes.size(); i++)
   {
     boolean hooveredOn = paintShapes.get(i).draw(pointerX, pointerY);
@@ -72,6 +72,10 @@ void keyPressed() {
     paintShapes.add(new PaintShape(pointer.x, pointer.y, ELLIPSE));
   } else if (key == 'r') {
     paintShapes.add(new PaintShape(pointer.x, pointer.y, RECT));
+  } else if (key == 'x') {
+    if (lockedShape != null) {
+      paintShapes.remove(lockedShapeIndex);
+    }
   }
   pointer.drawDragging();
 }
