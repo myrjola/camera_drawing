@@ -1,13 +1,21 @@
 #+TITLE: Tehtävä 1A: Yksinkertainen piirtämisohjelma
 #+AUTHOR: Martin Yrjölä (84086N) \\ \tt{martin.yrjola@aalto.fi}
 #+LANGUAGE: fi
-
 #+OPTIONS: toc:nil
 #+LATEX_HEADER: \usepackage[finnish]{babel}
 #+LATEX_CLASS_OPTIONS: [a4paper,10pt]
 
 \parindent 0mm
 \parskip 3mm
+
+* Palautuksen sisältö
+*Ohjelmakoodi:*
+- kamerapiirrustusohjelma: camera\textunderscore{}drawing.pde
+- kamerakursori: CameraPointer.pde
+- axis aligned bounding box: AABB.pde
+
+*Demovideo* ei mahtunut palautuksen tiedostokoon rajojen sisälle, mutta olen
+julkaissut sen osoitteeseen: https://youtu.be/0xG2nKAneOY
 
 * Toteutetut ominaisuudet
 - ellipsien ja suorakaiteiden manipulointi
