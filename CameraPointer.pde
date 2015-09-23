@@ -71,15 +71,15 @@ class CameraPointer {
         float neighbor8Hue = hueMatrix[pixelY][pixelX + samplingRadius/2];
 
         // We are trying to minimize the squares of the difference
-        float hueDifference  = sq(abs(targetHue - pixelHue));
-        float hueDifference1 = sq(abs(targetHue - neighbor1Hue));
-        float hueDifference2 = sq(abs(targetHue - neighbor2Hue));
-        float hueDifference3 = sq(abs(targetHue - neighbor3Hue));
-        float hueDifference4 = sq(abs(targetHue - neighbor4Hue));
-        float hueDifference5 = sq(abs(targetHue - neighbor5Hue));
-        float hueDifference6 = sq(abs(targetHue - neighbor6Hue));
-        float hueDifference7 = sq(abs(targetHue - neighbor7Hue));
-        float hueDifference8 = sq(abs(targetHue - neighbor8Hue));
+        float hueDifference  = sq(targetHue - pixelHue);
+        float hueDifference1 = sq(targetHue - neighbor1Hue);
+        float hueDifference2 = sq(targetHue - neighbor2Hue);
+        float hueDifference3 = sq(targetHue - neighbor3Hue);
+        float hueDifference4 = sq(targetHue - neighbor4Hue);
+        float hueDifference5 = sq(targetHue - neighbor5Hue);
+        float hueDifference6 = sq(targetHue - neighbor6Hue);
+        float hueDifference7 = sq(targetHue - neighbor7Hue);
+        float hueDifference8 = sq(targetHue - neighbor8Hue);
 
         float totalDifference = hueDifference +
           (hueDifference1 + hueDifference2 + hueDifference3 + hueDifference4) / 5 +
