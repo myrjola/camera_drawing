@@ -1,0 +1,51 @@
+#+TITLE: Tehtävä 1A: Yksinkertainen piirtämisohjelma
+#+AUTHOR: Martin Yrjölä (84086N) \\ \tt{martin.yrjola@aalto.fi}
+#+LANGUAGE: fi
+
+#+OPTIONS: toc:nil
+#+LATEX_HEADER: \usepackage[finnish]{babel}
+#+LATEX_CLASS_OPTIONS: [a4paper,10pt]
+
+\parindent 0mm
+\parskip 3mm
+
+* Toteutetut ominaisuudet
+- ellipsien ja suorakaiteiden manipulointi
+  - luonti/tuhoaminen
+  - skaalaus
+  - rotaatio
+  - siirto
+  - värin valitseminen
+  - järjestyksen valinta (objektin siirtäminen vie sen etumaiseksi)
+- kameraohjaus
+  - perustuu värisävyn seuraamiseen
+    - pikselin läheisten pikseleiden värisävy otetaan huomioon hyppimisen
+      välttämiseksi
+  - kursorin liikkeen pehmennys
+
+* Opitut asiat
+
+Toteutin ensimmäistä kertaa kameraohjausta, joten se oli mielenkiintoista
+kokeilla mitkä asiat toimivat.
+
+Iteroin muutamaa eri taktiikkaa, mutta päädyin lopulta värisävyn seuraamiseen
+luennolla näytetyn vakuuttavan demon takia. Tämän ratkaisun ongelmat piilivät
+kursorin hyppimisessä.
+
+Hyppimisen korjaamiseksi kokeilin ensimmäiseksi kuvan voimakasta sumentamista
+BLUR-filtterillä, jotta seurattavien objektien keskellä olisi voimakkain
+värisävy. Filtteri osoittautui liian hitaaksi ja =PImage=-luokka ei tukenut
+filtteröintiä omilla varjostimilla (shader), joten jouduin tyytymään läheisten
+pikseleiden sämpläämiseen =CameraPointer=-luokassa. Onneksi tämä ratkaisu ei
+tuottanut suorituskykyongelmia.
+
+* Itsearviointi
+
+Ajan budjetointi ei mennyt suunnitelmien mukaan. Käytin kaksi tuntia yli
+tehtävään budjetoidun 15 tuntia. Jatkossa pitää priorisoida paremmin. Poltin
+kaksi tuntia siihen, että skaalaus ottaa huomioon objektin rotaation, joka on
+käytettävyyden kannalta hyvä asia, mutta pisteytyksen kannalta ei niinkän
+arvokas.
+
+Muuten olen tyytyväinen tuotokseen. Processing osoittautui miellyttäväksi
+ympäristöksi toteuttaa visuaalisia ohjelmia.
